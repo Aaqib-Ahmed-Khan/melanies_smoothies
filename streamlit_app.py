@@ -18,7 +18,7 @@ session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
 pd_df=my_dataframe.to_pandas()
 st.dataframe(pd_df)
-st.stop()
+# st.stop()
 
 # st.dataframe(data=my_dataframe,use_container_width=True)
 # st.stop()
@@ -45,8 +45,9 @@ if submit_button:
             st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
 
             st.subheader(fruit_chosen + 'Nutrition Information ')
-            smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-            sf_df=st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
+           search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+           api_url = f"https://my.smoothiefroot.com/api/fruit/{search_on.lower()}"
+           response = requests.get(api_url)
 
         # Build SQL insert statement
         my_insert_stmt = """INSERT INTO smoothies.public.orders (ingredients, name_on_order)
