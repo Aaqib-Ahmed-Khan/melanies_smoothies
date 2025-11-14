@@ -35,10 +35,22 @@ if submit_button:
         ingredients_string = ""
         for fruit_chosen in ingredients_list:
             ingredients_string += fruit_chosen + ' '
+            
+            # Get SEARCH_ON value
             search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
             st.write('The search value for', fruit_chosen, 'is', search_on)
 
-        # Build SQL insert statement
+            # Nutrition info API call
+            api_url = f"https://my.smoothiefroot.com/api/fruit/{search_on.lower()}"
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                nutrition_data = response.json()
+                st.subheader(f"{fruit_chosen} Nutrition Information")
+                st.dataframe(pd.DataFrame([nutrition_data]))
+            else:
+                st.warning(f"Nutrition info for {fruit_chosen} not found in API.")
+
+        # Insert order into Snowflake
         my_insert_stmt = f"""
         INSERT INTO smoothies.public.orders (ingredients, name_on_order)
         VALUES ('{ingredients_string.strip()}', '{smoothie_name}')
