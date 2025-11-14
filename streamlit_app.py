@@ -46,6 +46,7 @@ if submit_button:
             if response.status_code == 200:
                 nutrition_data = response.json()
                 st.subheader(f"{fruit_chosen} Nutrition Information")
+                smoothiefroot_response=requests.get(f"https://my.smoothiefroot.com/api/fruit/{search_on}")
                 st.dataframe(pd.DataFrame([nutrition_data]))
             else:
                 st.warning(f"Nutrition info for {fruit_chosen} not found in API.")
