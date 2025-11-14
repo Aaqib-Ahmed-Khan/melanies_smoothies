@@ -16,7 +16,7 @@ cnx=st.connection("snowflake")
 session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
 st.dataframe(data=my_dataframe,use_container_width=True)
-st.stopt()
+st.stop()
 
 # Convert Snowpark DataFrame to simple Python list
 fruit_names = [row.FRUIT_NAME for row in my_dataframe.select("FRUIT_NAME").collect()]
